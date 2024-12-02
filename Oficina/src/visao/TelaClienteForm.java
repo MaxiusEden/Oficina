@@ -9,139 +9,41 @@ import java.awt.*;
 import modelo.Cliente;
 import persistencia.ClienteDAO;
 
-public class TelaClienteForm extends JDialog {
-    private JTextField txtNome, txtTelefone, txtLogradouro, txtNumero;
-    private JTextField txtComplemento, txtEmail, txtCpf, txtCnpj;
-    private JTextField txtContato, txtInscricaoEstadual;
-    private JComboBox<String> cboTipoCliente;
-    private JButton btnSalvar, btnCancelar;
+public class TelaClienteForm extends JDialog {  
     private ClienteDAO clienteDAO;
     private Cliente cliente;
     private boolean editando;
 
     public TelaClienteForm(Frame parent, boolean modal) {
         super(parent, modal);
-        inicializar();
+        setTitle("Novo Cliente");
+        clienteDAO = new ClienteDAO();
+        cliente = new Cliente();
+        initComponents();
+        configurarComponentes();
     }
 
     public TelaClienteForm(Frame parent, boolean modal, int idCliente) {
         super(parent, modal);
+        setTitle("Editar Cliente");
+        clienteDAO = new ClienteDAO();
         editando = true;
-        inicializar();
+        initComponents();
+        configurarComponentes();
         carregarCliente(idCliente);
     }
 
-    private void inicializar() {
-        setTitle(editando ? "Editar Cliente" : "Novo Cliente");
-        setSize(600, 500);
-        setLocationRelativeTo(null);
-        setLayout(new GridBagLayout());
-        clienteDAO = new ClienteDAO();
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        // Tipo Cliente
-        gbc.gridx = 0; gbc.gridy = 0;
-        add(new JLabel("Tipo Cliente:"), gbc);
-        cboTipoCliente = new JComboBox<>(new String[]{"FISICA", "JURIDICA"});
-        gbc.gridx = 1;
-        add(cboTipoCliente, gbc);
-
-        // Nome
-        gbc.gridx = 0; gbc.gridy = 1;
-        add(new JLabel("Nome:"), gbc);
-        txtNome = new JTextField(30);
-        gbc.gridx = 1;
-        add(txtNome, gbc);
-
-        // Telefone
-        gbc.gridx = 0; gbc.gridy = 2;
-        add(new JLabel("Telefone:"), gbc);
-        txtTelefone = new JTextField(15);
-        gbc.gridx = 1;
-        add(txtTelefone, gbc);
-
-        // Logradouro
-        gbc.gridx = 0; gbc.gridy = 3;
-        add(new JLabel("Logradouro:"), gbc);
-        txtLogradouro = new JTextField(30);
-        gbc.gridx = 1;
-        add(txtLogradouro, gbc);
-
-        // Número
-        gbc.gridx = 0; gbc.gridy = 4;
-        add(new JLabel("Número:"), gbc);
-        txtNumero = new JTextField(10);
-        gbc.gridx = 1;
-        add(txtNumero, gbc);
-
-        // Complemento
-        gbc.gridx = 0; gbc.gridy = 5;
-        add(new JLabel("Complemento:"), gbc);
-        txtComplemento = new JTextField(30);
-        gbc.gridx = 1;
-        add(txtComplemento, gbc);
-
-        // Email
-        gbc.gridx = 0; gbc.gridy = 6;
-        add(new JLabel("Email:"), gbc);
-        txtEmail = new JTextField(30);
-        gbc.gridx = 1;
-        add(txtEmail, gbc);
-
-        // CPF
-        gbc.gridx = 0; gbc.gridy = 7;
-        add(new JLabel("CPF:"), gbc);
-        txtCpf = new JTextField(11);
-        gbc.gridx = 1;
-        add(txtCpf, gbc);
-
-        // CNPJ
-        gbc.gridx = 0; gbc.gridy = 8;
-        add(new JLabel("CNPJ:"), gbc);
-        txtCnpj = new JTextField(14);
-        gbc.gridx = 1;
-        add(txtCnpj, gbc);
-
-        // Contato
-        gbc.gridx = 0; gbc.gridy = 9;
-        add(new JLabel("Contato:"), gbc);
-        txtContato = new JTextField(30);
-        gbc.gridx = 1;
-        add(txtContato, gbc);
-
-        // Inscrição Estadual
-        gbc.gridx = 0; gbc.gridy = 10;
-        add(new JLabel("Inscrição Estadual:"), gbc);
-        txtInscricaoEstadual = new JTextField(20);
-        gbc.gridx = 1;
-        add(txtInscricaoEstadual, gbc);
-
-        // Botões
-        JPanel painelBotoes = new JPanel();
-        btnSalvar = new JButton("Salvar");
-        btnCancelar = new JButton("Cancelar");
-        painelBotoes.add(btnSalvar);
-        painelBotoes.add(btnCancelar);
-
-        gbc.gridx = 0; gbc.gridy = 11;
-        gbc.gridwidth = 2;
-        add(painelBotoes, gbc);
-
-        // Eventos
-        btnSalvar.addActionListener(e -> salvar());
-        btnCancelar.addActionListener(e -> dispose());
-        
-        // Evento de mudança do tipo de cliente
+    private void configurarComponentes() {
         cboTipoCliente.addActionListener(e -> {
             boolean isFisica = cboTipoCliente.getSelectedItem().equals("FISICA");
             txtCpf.setEnabled(isFisica);
             txtCnpj.setEnabled(!isFisica);
             txtInscricaoEstadual.setEnabled(!isFisica);
         });
+        
+        btnCancelar.addActionListener(e -> dispose());
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -149,24 +51,219 @@ public class TelaClienteForm extends JDialog {
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        cboTipoCliente = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        txtNome = new javax.swing.JTextField();
+        txtTelefone = new javax.swing.JTextField();
+        txtLogradouro = new javax.swing.JTextField();
+        txtNumero = new javax.swing.JTextField();
+        txtComplemento = new javax.swing.JTextField();
+        txtEmail = new javax.swing.JTextField();
+        txtCpf = new javax.swing.JTextField();
+        txtCnpj = new javax.swing.JTextField();
+        txtContato = new javax.swing.JTextField();
+        txtInscricaoEstadual = new javax.swing.JTextField();
+        btnSalvar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jLabel1.setText("Tipo de Cliente:");
+
+        cboTipoCliente.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FISICA", "JURIDICA" }));
+
+        jLabel2.setText("Nome:");
+
+        jLabel3.setText("Telefone:");
+
+        jLabel4.setText("Logradouro:");
+
+        jLabel5.setText("Numero:");
+
+        jLabel6.setText("Complemento:");
+
+        jLabel7.setText("Email:");
+
+        jLabel8.setText("CPF:");
+
+        jLabel9.setText("CNPJ:");
+
+        jLabel10.setText("Contato:");
+
+        jLabel11.setText("Inscrição Estadual:");
+
+        btnSalvar.setText("SALVAR");
+        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalvarActionPerformed(evt);
+            }
+        });
+
+        btnCancelar.setText("CANCELAR");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cboTipoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtTelefone))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtLogradouro))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtNumero))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtComplemento))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtEmail))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCpf))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCnpj))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtContato))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnSalvar)
+                            .addComponent(jLabel11))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtInscricaoEstadual))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnCancelar)
+                                .addGap(31, 31, 31)))))
+                .addContainerGap(384, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(cboTipoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(txtLogradouro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtComplemento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(txtCpf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(txtCnpj, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(txtContato, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(txtInscricaoEstadual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSalvar)
+                    .addComponent(btnCancelar))
+                .addGap(53, 53, 53))
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {                                          
+      if (!validarCampos()) {
+            return;
+        }
+
+        cliente.setTipoCliente(cboTipoCliente.getSelectedItem().toString());
+        cliente.setNome(txtNome.getText());
+        cliente.setTelefone(txtTelefone.getText());
+        cliente.setLogradouro(txtLogradouro.getText());
+        cliente.setNumero(txtNumero.getText());
+        cliente.setComplemento(txtComplemento.getText());
+        cliente.setEmail(txtEmail.getText());
+        cliente.setCpf(txtCpf.getText());
+        cliente.setCnpj(txtCnpj.getText());
+        cliente.setContato(txtContato.getText());
+        cliente.setInscricaoEstadual(txtInscricaoEstadual.getText());
+
+        try {
+            if (editando) {
+                clienteDAO.atualizar(cliente);
+                JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!");
+            } else {
+                clienteDAO.inserir(cliente);
+                JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso!");
+            }
+            dispose();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Erro ao salvar cliente: " + e.getMessage(),
+                "Erro",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }   
 private void carregarCliente(int id) {
         cliente = clienteDAO.buscarPorId(id);
         if (cliente != null) {
@@ -235,7 +332,7 @@ private void carregarCliente(int id) {
             txtTelefone.requestFocus();
             return false;
         }
-        
+
         String tipo = cboTipoCliente.getSelectedItem().toString();
         if (tipo.equals("FISICA") && txtCpf.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "O CPF é obrigatório para pessoa física!");
@@ -247,7 +344,7 @@ private void carregarCliente(int id) {
             txtCnpj.requestFocus();
             return false;
         }
-        
+
         return true;
     }
 
