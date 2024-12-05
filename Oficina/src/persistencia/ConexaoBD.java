@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class ConexaoBD {
-    private static final String URL = "jdbc:postgresql://localhost:5432/oficina";
+    private static final String URL = "jdbc:postgresql://localhost:5432/Oficina";
     private static final String USER = "postgres";
     private static final String PASS = "12345";
     
