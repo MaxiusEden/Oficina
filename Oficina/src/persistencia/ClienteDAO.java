@@ -4,12 +4,11 @@
  */
 package persistencia;
 
-import persistencia.ConexaoBD;
-import modelo.Cliente;
 import interfaces.ICRUD;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.Cliente;
 
 public class ClienteDAO implements ICRUD<Cliente> {
     @Override
@@ -69,38 +68,22 @@ public class ClienteDAO implements ICRUD<Cliente> {
 
     
    
-    @Override
-    public Cliente buscarPorId(int id) {
+   @Override
+public Cliente buscarPorId(Object id) {
     String sql = "SELECT * FROM cliente WHERE id_cliente = ?";
-    Cliente cliente = null;
-    
     try (Connection conn = ConexaoBD.getConnection();
          PreparedStatement stmt = conn.prepareStatement(sql)) {
-        
-        stmt.setInt(1, id);
+        stmt.setInt(1, Integer.parseInt(id.toString()));
         ResultSet rs = stmt.executeQuery();
-        
         if (rs.next()) {
-            cliente = new Cliente();
-            cliente.setIdCliente(rs.getInt("id_cliente"));
-            cliente.setTipoCliente(rs.getString("tipo_cliente"));
-            cliente.setNome(rs.getString("nome"));
-            cliente.setTelefone(rs.getString("telefone"));
-            cliente.setLogradouro(rs.getString("logradouro"));
-            cliente.setNumero(rs.getString("numero"));
-            cliente.setComplemento(rs.getString("complemento"));
-            cliente.setEmail(rs.getString("email"));
-            cliente.setCpf(rs.getString("cpf"));
-            cliente.setCnpj(rs.getString("cnpj"));
-            cliente.setContato(rs.getString("contato"));
-            cliente.setInscricaoEstadual(rs.getString("inscricao_estadual"));
+            return criarCliente(rs);
         }
-        
-        return cliente;
     } catch (SQLException e) {
         throw new RuntimeException("Erro ao buscar cliente: " + e.getMessage());
     }
+    return null;
 }
+
     private Cliente criarCliente(ResultSet rs) throws SQLException {
         Cliente cliente = new Cliente();
         cliente.setIdCliente(rs.getInt("id_cliente"));

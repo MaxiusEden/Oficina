@@ -4,9 +4,9 @@
  */
 package servico;
 
+import java.util.List;
 import modelo.Cliente;
 import persistencia.ClienteDAO;
-import java.util.List;
 
 public class ClienteServico {
     private ClienteDAO clienteDAO;
@@ -52,8 +52,6 @@ public class ClienteServico {
         }
     }
 
-    
-
     public Cliente buscarPorId(int id) {
         if (id <= 0) {
             throw new IllegalArgumentException("ID inválido para busca");
@@ -65,4 +63,3 @@ public class ClienteServico {
         return clienteDAO.listarTodos();
     }
 }
-

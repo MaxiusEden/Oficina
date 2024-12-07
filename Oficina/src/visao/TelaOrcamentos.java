@@ -4,17 +4,53 @@
  */
 package visao;
 
-/**
- *
- * @author filip
- */
-public class TelaOrcamentos extends javax.swing.JFrame {
+import forms.TelaOrcamentoForm;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Frame;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import modelo.ItensPeca;
+import modelo.ItensServico;
+import servico.ItensPecaServico;
+import servico.ItensServicoServico;
+import java.util.List;
 
+public class TelaOrcamentos extends JInternalFrame {
+    private DefaultTableModel modeloTabela;
+    private ItensPecaServico itensPecaServico;
+    private ItensServicoServico itensServicoServico;
+    private int idOrdemServico; 
     /**
      * Creates new form TelaOrcamento
      */
     public TelaOrcamentos() {
+        setClosable(true);
+        setMaximizable(true);
+        setResizable(true);
+        setIconifiable(true);
+        setPreferredSize(new java.awt.Dimension(800, 600));
         initComponents();
+        configurarTabela();
+        itensPecaServico = new ItensPecaServico();
+        itensServicoServico = new ItensServicoServico();
+        carregarDados();
+    }
+    
+    private void configurarTabela() {
+        String[] colunas = {
+            "OS", "Peça/Serviço", "Quantidade", 
+            "Valor Unitário", "Valor Total", "Tipo"
+        };
+        modeloTabela = new DefaultTableModel(colunas, 0);
+        tabela.setModel(modeloTabela);
+        
+        tabela.getColumnModel().getColumn(0).setPreferredWidth(50);   // OS
+        tabela.getColumnModel().getColumn(1).setPreferredWidth(200);  // Item
+        tabela.getColumnModel().getColumn(2).setPreferredWidth(100);  // Quantidade
+        tabela.getColumnModel().getColumn(3).setPreferredWidth(100);  // Valor Unit
+        tabela.getColumnModel().getColumn(4).setPreferredWidth(100);  // Valor Total
+        tabela.getColumnModel().getColumn(5).setPreferredWidth(100);  // Tipo
     }
 
     /**
@@ -26,22 +62,122 @@ public class TelaOrcamentos extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabela = new javax.swing.JTable();
+        btnNovo = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
+
+        setClosable(true);
+        setMaximizable(true);
+        setResizable(true);
+        setIconifiable(true);
+
+        tabela.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tabela);
+
+        btnNovo.setText("Novo Or amento");
+        btnNovo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNovoActionPerformed(evt);
+            }
+        });
+
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 946, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnNovo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnEditar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnNovo)
+                    .addComponent(btnEditar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
+         Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
+    TelaOrcamentoForm form = new TelaOrcamentoForm(parentFrame, true, 0);
+    form.setVisible(true);
+    carregarDados();
+    }//GEN-LAST:event_btnNovoActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+       int linha = tabela.getSelectedRow();
+    if (linha >= 0) {
+        int idOs = (int) tabela.getValueAt(linha, 0);
+        TelaOrcamentoForm form = new TelaOrcamentoForm((Frame) SwingUtilities.getWindowAncestor(this), true, idOs);
+        form.setVisible(true);
+        carregarDados();
+    } else {
+        JOptionPane.showMessageDialog(this, 
+            "Selecione um item para editar",
+            "Editar Item",
+            JOptionPane.WARNING_MESSAGE);
+    }
+    }//GEN-LAST:event_btnEditarActionPerformed
+    private void carregarDados() {
+        modeloTabela.setRowCount(0);
+        
+        // Carregar Pe as
+        List<ItensPeca> itensPeca = itensPecaServico.listarTodos();
+        for (ItensPeca ip : itensPeca) {
+            modeloTabela.addRow(new Object[]{
+                ip.getIdOs(),
+                ip.getIdPeca(),
+                ip.getQuantidade(),
+                ip.getValorUnitario(),
+                ip.getValorTotal(),
+                "Peça"
+            });
+        }
+        
+        // Carregar Servi os
+        List<ItensServico> itensServico = itensServicoServico.listarTodos();
+        for (ItensServico is : itensServico) {
+            modeloTabela.addRow(new Object[]{
+                is.getIdOs(),
+                is.getIdServico(),
+                is.getQuantidade(),
+                is.getValorUnitario(),
+                is.getValorTotal(),
+                "Serviço"
+            });
+        }
+    }
     /**
      * @param args the command line arguments
      */
@@ -79,5 +215,10 @@ public class TelaOrcamentos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnNovo;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tabela;
     // End of variables declaration//GEN-END:variables
 }
+

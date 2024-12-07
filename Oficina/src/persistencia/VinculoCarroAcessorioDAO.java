@@ -4,14 +4,14 @@
  */
 package persistencia;
 
-import persistencia.ConexaoBD;
-import modelo.VinculoCarroAcessorio;
 import interfaces.ICRUD;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.VinculoCarroAcessorio;
 
 public class VinculoCarroAcessorioDAO implements ICRUD<VinculoCarroAcessorio> {
+    
     @Override
     public void inserir(VinculoCarroAcessorio vinculo) {
         String sql = "INSERT INTO vinculo_carro_acessorio (placa_veiculo, id_acessorio) VALUES (?, ?)";
@@ -23,7 +23,7 @@ public class VinculoCarroAcessorioDAO implements ICRUD<VinculoCarroAcessorio> {
             stmt.setInt(2, vinculo.getIdAcessorio());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao inserir vínculo: " + e.getMessage());
+            throw new RuntimeException("Erro ao inserir vínculo: " + e.getMessage(), e);
         }
     }
 
@@ -32,24 +32,9 @@ public class VinculoCarroAcessorioDAO implements ICRUD<VinculoCarroAcessorio> {
         // Não é necessário implementar atualização pois a tabela possui chave composta
         throw new UnsupportedOperationException("Operação não suportada para vínculo carro-acessório");
     }
-   
-
-    public void excluir(String placa, int idAcessorio) {
-        String sql = "DELETE FROM vinculo_carro_acessorio WHERE placa_veiculo = ? AND id_acessorio = ?";
-        
-        try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setString(1, placa);
-            stmt.setInt(2, idAcessorio);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao excluir vínculo: " + e.getMessage());
-        }
-    }
 
     @Override
-    public VinculoCarroAcessorio buscarPorId(int id) {
+    public VinculoCarroAcessorio buscarPorId(Object id) {
         throw new UnsupportedOperationException("Use o método buscarPorPlacaEAcessorio(String placa, int idAcessorio)");
     }
 
@@ -67,7 +52,7 @@ public class VinculoCarroAcessorioDAO implements ICRUD<VinculoCarroAcessorio> {
                 return criarVinculo(rs);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar vínculo: " + e.getMessage());
+            throw new RuntimeException("Erro ao buscar vínculo: " + e.getMessage(), e);
         }
         return null;
     }
@@ -85,7 +70,7 @@ public class VinculoCarroAcessorioDAO implements ICRUD<VinculoCarroAcessorio> {
                 vinculos.add(criarVinculo(rs));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao listar vínculos: " + e.getMessage());
+            throw new RuntimeException("Erro ao listar vínculos: " + e.getMessage(), e);
         }
         return vinculos;
     }

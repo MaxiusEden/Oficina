@@ -7,37 +7,38 @@ package forms;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.text.PlainDocument;
-import modelo.Servico;
-import servico.ServicoServico;
+import modelo.Peca;
+import servico.PecaServico;
 import utilitarios.DecimalDocumentFilter;
 
-public class TelaServicoForm extends JDialog {
-    private ServicoServico servicoServico;
-    private Servico servico;
+public class TelaPecaForm extends JDialog {
+    private PecaServico pecaServico;
+    private Peca peca;
     private boolean editando;
-
-     public TelaServicoForm(Frame parent, boolean modal) {
+    /**
+     * Creates new form TelaPecaForm
+     */
+   public TelaPecaForm(Frame parent, boolean modal) {
         super(parent, modal);
-        setTitle("Novo Serviço");
-        servicoServico = new ServicoServico();
-        servico = new Servico();
+        setTitle("Nova Peça");
+        pecaServico = new PecaServico();
+        peca = new Peca();
         initComponents();
         configurarComponentes();
     }
 
-    public TelaServicoForm(Frame parent, boolean modal, int idServico) {
+    public TelaPecaForm(Frame parent, boolean modal, int idPeca) {
         super(parent, modal);
-        setTitle("Editar Serviço");
-        servicoServico = new ServicoServico();
+        setTitle("Editar Peça");
+        pecaServico = new PecaServico();
         editando = true;
         initComponents();
         ((PlainDocument) txtValor.getDocument()).setDocumentFilter(new DecimalDocumentFilter());
 
         configurarComponentes();
-        carregarServico(idServico);
+        carregarPeca(idPeca);
     }
-
-    private void configurarComponentes() {
+ private void configurarComponentes() {
         btnCancelar.addActionListener(e -> dispose());
     }
 
@@ -50,17 +51,18 @@ public class TelaServicoForm extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
         btnSalvar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         txtNome = new javax.swing.JTextField();
         txtDescricao = new javax.swing.JTextField();
+        txtQuantidade = new javax.swing.JTextField();
         txtValor = new javax.swing.JTextField();
-
-        jButton2.setText("jButton2");
+        txtCodigo = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -68,7 +70,11 @@ public class TelaServicoForm extends JDialog {
 
         jLabel2.setText("Descrição:");
 
-        jLabel3.setText("Valor:");
+        jLabel3.setText("Quantidade:");
+
+        jLabel4.setText("Valor:");
+
+        jLabel5.setText("Codigo:");
 
         btnSalvar.setText("Salvar");
         btnSalvar.addActionListener(new java.awt.event.ActionListener() {
@@ -97,12 +103,20 @@ public class TelaServicoForm extends JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtQuantidade))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtValor))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCodigo))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnSalvar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCancelar)))
-                .addContainerGap(244, Short.MAX_VALUE))
+                .addContainerGap(351, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -118,49 +132,62 @@ public class TelaServicoForm extends JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
+                    .addComponent(txtQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
                     .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 129, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSalvar)
                     .addComponent(btnCancelar))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-       if (!validarCampos()) {
+      if (!validarCampos()) {
             return;
         }
 
-        servico.setNome(txtNome.getText());
-        servico.setDescricao(txtDescricao.getText());
-        servico.setValor(Double.parseDouble(txtValor.getText()));
+        peca.setNome(txtNome.getText());
+        peca.setDescricao(txtDescricao.getText());
+        peca.setQuantidadeEstoque(Integer.parseInt(txtQuantidade.getText()));
+        peca.setValorUnitario(Double.parseDouble(txtValor.getText()));
+        peca.setCodigoFabricante(txtCodigo.getText());
 
         try {
-            servicoServico.salvar(servico);
+            pecaServico.salvar(peca);
             JOptionPane.showMessageDialog(this, 
-                "Serviço salvo com sucesso!", 
+                "Peça salva com sucesso!", 
                 "Sucesso", 
                 JOptionPane.INFORMATION_MESSAGE);
             dispose();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, 
-                "Erro ao salvar serviço: " + e.getMessage(), 
+                "Erro ao salvar peça: " + e.getMessage(), 
                 "Erro", 
                 JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
- private void carregarServico(int id) {
-        servico = servicoServico.buscarPorId(id);
-        if (servico != null) {
-            txtNome.setText(servico.getNome());
-            txtDescricao.setText(servico.getDescricao());
-            txtValor.setText(String.format("%.2f", servico.getValor()));
+  private void carregarPeca(int id) {
+        peca = pecaServico.buscarPorId(id);
+        if (peca != null) {
+            txtNome.setText(peca.getNome());
+            txtDescricao.setText(peca.getDescricao());
+            txtQuantidade.setText(String.valueOf(peca.getQuantidadeEstoque()));
+            txtValor.setText(String.format("%.2f", peca.getValorUnitario()));
+            txtCodigo.setText(peca.getCodigoFabricante());
         }
     }
-  private boolean validarCampos() {
+
+    private boolean validarCampos() {
         if (txtNome.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "O nome é obrigatório!");
             txtNome.requestFocus();
@@ -169,6 +196,13 @@ public class TelaServicoForm extends JDialog {
         if (txtDescricao.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "A descrição é obrigatória!");
             txtDescricao.requestFocus();
+            return false;
+        }
+        try {
+            Integer.parseInt(txtQuantidade.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Quantidade inválida!");
+            txtQuantidade.requestFocus();
             return false;
         }
         try {
@@ -197,20 +231,20 @@ public class TelaServicoForm extends JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaServicoForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaPecaForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaServicoForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaPecaForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaServicoForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaPecaForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaServicoForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaPecaForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                TelaServicoForm dialog = new TelaServicoForm(new javax.swing.JFrame(), true);
+                TelaPecaForm dialog = new TelaPecaForm(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -225,12 +259,15 @@ public class TelaServicoForm extends JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnSalvar;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtDescricao;
     private javax.swing.JTextField txtNome;
+    private javax.swing.JTextField txtQuantidade;
     private javax.swing.JTextField txtValor;
     // End of variables declaration//GEN-END:variables
 }

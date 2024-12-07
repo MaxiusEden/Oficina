@@ -4,9 +4,9 @@
  */
 package servico;
 
+import java.util.List;
 import modelo.OrdemServico;
 import persistencia.OrdemServicoDAO;
-import java.util.List;
 
 public class OrdemServicoServico {
     private OrdemServicoDAO osDAO;
@@ -42,8 +42,6 @@ public class OrdemServicoServico {
             throw new IllegalArgumentException("Status é obrigatório");
         }
     }
-
-    
 
     public OrdemServico buscarPorId(int id) {
         if (id <= 0) {

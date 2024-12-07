@@ -9,6 +9,7 @@ import java.util.List;
 public interface ICRUD<T> {
     void inserir(T objeto);
     void atualizar(T objeto);
-    T buscarPorId(int id);
+    T buscarPorId(Object id);  
     List<T> listarTodos();
 }
+

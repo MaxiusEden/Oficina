@@ -4,12 +4,11 @@
  */
 package persistencia;
 
-import persistencia.ConexaoBD;
-import modelo.Peca;
 import interfaces.ICRUD;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.Peca;
 
 public class PecaDAO implements ICRUD<Peca> {
     @Override
@@ -53,16 +52,14 @@ public class PecaDAO implements ICRUD<Peca> {
         }
     }
 
-    
-
-    @Override
-    public Peca buscarPorId(int id) {
+   @Override
+    public Peca buscarPorId(Object id) {
         String sql = "SELECT * FROM peca WHERE id_peca = ?";
         
         try (Connection conn = ConexaoBD.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, id);
+            stmt.setInt(1, (Integer)id);
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {
@@ -73,7 +70,6 @@ public class PecaDAO implements ICRUD<Peca> {
         }
         return null;
     }
-
     @Override
     public List<Peca> listarTodos() {
         List<Peca> pecas = new ArrayList<>();
@@ -103,4 +99,3 @@ public class PecaDAO implements ICRUD<Peca> {
         return peca;
     }
 }
-

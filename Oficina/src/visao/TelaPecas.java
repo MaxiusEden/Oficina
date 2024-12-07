@@ -2,21 +2,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
+ */
 package visao;
 
 import forms.TelaPecaForm;
+import java.awt.BorderLayout;
+import java.awt.Frame;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import modelo.Peca;
 import servico.PecaServico;
 import java.util.List;
 
-public class TelaPecas extends javax.swing.JFrame {
+public class TelaPecas extends JInternalFrame {
     private DefaultTableModel modeloTabela;
     private PecaServico pecaServico;
 
     public TelaPecas() {
-        super("Gestão de Peças");
+        super("Gest o de Pe as", true, true, true, true);
         pecaServico = new PecaServico();
         initComponents();
         configurarTabela();
@@ -25,14 +31,14 @@ public class TelaPecas extends javax.swing.JFrame {
 
     private void configurarTabela() {
         String[] colunas = {
-            "ID", "Nome", "Descrição", "Valor"
+            "ID", "Nome", "Descri o", "Valor"
         };
         modeloTabela = new DefaultTableModel(colunas, 0);
         tabela.setModel(modeloTabela);
 
         tabela.getColumnModel().getColumn(0).setPreferredWidth(50);   // ID
         tabela.getColumnModel().getColumn(1).setPreferredWidth(150);  // Nome
-        tabela.getColumnModel().getColumn(2).setPreferredWidth(300);  // Descrição
+        tabela.getColumnModel().getColumn(2).setPreferredWidth(300);  // Descri o
         tabela.getColumnModel().getColumn(3).setPreferredWidth(100);  // Valor
     }
 
@@ -47,10 +53,17 @@ public class TelaPecas extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tabela = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnNovo = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setClosable(true);
+        setMaximizable(true);
+        setResizable(true);
+        addInternalFrameListener(new javax.swing.event.InternalFrameAdapter() {
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosing(evt);
+            }
+        });
 
         tabela.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -65,9 +78,19 @@ public class TelaPecas extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tabela);
 
-        jButton1.setText("Nova Peça");
+        btnNovo.setText("Nova Pe a");
+        btnNovo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNovoActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Editar");
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -78,9 +101,9 @@ public class TelaPecas extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 892, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(btnNovo)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
+                        .addComponent(btnEditar)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -89,8 +112,8 @@ public class TelaPecas extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(273, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(btnNovo)
+                    .addComponent(btnEditar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -98,17 +121,36 @@ public class TelaPecas extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
+        TelaPecaForm form = new TelaPecaForm((Frame)evt.getSource(), true);
+        form.setVisible(true);
+        carregarDados();
+    }//GEN-LAST:event_btnNovoActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        int linha = tabela.getSelectedRow();
+        if (linha >= 0) {
+            int id = (int) tabela.getValueAt(linha, 0);
+            TelaPecaForm form = new TelaPecaForm((Frame)evt.getSource(), true, id);
+            form.setVisible(true);
+            carregarDados();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                "Selecione uma pe a para editar",
+                "Editar Pe a",
+                JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
 private void carregarDados() {
-        modeloTabela.setRowCount(0);
-        List pecas = pecaServico.listarTodos();
-        
-        for (Object peca : pecas.toArray()) {
-            Peca p = (Peca) peca;
+         modeloTabela.setRowCount(0);
+        List<Peca> pecas = pecaServico.listarTodos();
+        for (Peca p : pecas) {
             modeloTabela.addRow(new Object[]{
                 p.getIdPeca(),
                 p.getNome(),
                 p.getDescricao(),
-                String.format("R$ %.2f", p.getValor())
+                p.getValorUnitario()
             });
         }
     }
@@ -148,9 +190,13 @@ private void carregarDados() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnNovo;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tabela;
     // End of variables declaration//GEN-END:variables
+
+    private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
+        this.dispose();
+    }//GEN-LAST:event_formInternalFrameClosing
 }

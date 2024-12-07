@@ -59,6 +59,12 @@ public class Peca {
     public void setCodigoFabricante(String codigoFabricante) {
         this.codigoFabricante = codigoFabricante;
     }
+
+    @Override
+public String toString() {
+    return this.getNome(); 
+}
+
     
     
 }

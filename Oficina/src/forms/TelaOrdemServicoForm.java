@@ -9,15 +9,31 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import modelo.OrdemServico;
 import servico.OrdemServicoServico;
 import servico.VeiculoServico;
+import utilitarios.TimeSpinner;
+import com.toedter.calendar.JDateChooser;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.awt.FlowLayout;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import javax.swing.text.PlainDocument;
+import utilitarios.DecimalDocumentFilter;
+
 
 public class TelaOrdemServicoForm extends JDialog {
     private OrdemServicoServico ordemServicoServico;
     private VeiculoServico veiculoServico;
     private OrdemServico ordemServico;
     private boolean editando;
+    private JDateChooser dateChooser;
+    private TimeSpinner timeSpinner;
+    
+    
     /**
      * Creates new form TelaOrdemServicoForm
      */
@@ -26,7 +42,7 @@ public class TelaOrdemServicoForm extends JDialog {
         setTitle("Nova Ordem de Serviço");
         ordemServicoServico = new OrdemServicoServico();
         veiculoServico = new VeiculoServico();
-        ordemServico = new OrdemServico();
+        ordemServico = new OrdemServico();        
         initComponents();
         configurarComponentes();
     }
@@ -50,6 +66,16 @@ public class TelaOrdemServicoForm extends JDialog {
         btnCancelar.addActionListener(e -> dispose());
         
         txtValorPago.addActionListener(e -> calcularDiferenca());
+        dateChooser = new JDateChooser();
+        timeSpinner = new TimeSpinner();
+        DecimalFormat df = new DecimalFormat("#,##0.00");
+    DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+    symbols.setDecimalSeparator(',');
+    symbols.setGroupingSeparator('.');
+    df.setDecimalFormatSymbols(symbols);
+    ((PlainDocument) txtValorTotal.getDocument()).setDocumentFilter(new DecimalDocumentFilter());
+((PlainDocument) txtValorPago.getDocument()).setDocumentFilter(new DecimalDocumentFilter());
+((PlainDocument) txtDiferenca.getDocument()).setDocumentFilter(new DecimalDocumentFilter());
     }
 
     /**
@@ -79,6 +105,9 @@ public class TelaOrdemServicoForm extends JDialog {
         cboStatus = new javax.swing.JComboBox<>();
         txtValorPago = new javax.swing.JTextField();
         txtDiferenca = new javax.swing.JTextField();
+        btnDataEntrada = new javax.swing.JButton();
+        btnHoraInicio = new javax.swing.JButton();
+        btnPrevisaoEntrega = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -106,6 +135,27 @@ public class TelaOrdemServicoForm extends JDialog {
         });
 
         btnCancelar.setText("Cancelar");
+
+        btnDataEntrada.setText("📅");
+        btnDataEntrada.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDataEntradaActionPerformed(evt);
+            }
+        });
+
+        btnHoraInicio.setText("🕒");
+        btnHoraInicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHoraInicioActionPerformed(evt);
+            }
+        });
+
+        btnPrevisaoEntrega.setText("📅🕒");
+        btnPrevisaoEntrega.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPrevisaoEntregaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -146,7 +196,13 @@ public class TelaOrdemServicoForm extends JDialog {
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtDiferenca)))
-                .addContainerGap(712, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnPrevisaoEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(btnDataEntrada, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                        .addComponent(btnHoraInicio, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(606, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addComponent(btnSalvar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -167,15 +223,18 @@ public class TelaOrdemServicoForm extends JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtDataEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDataEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDataEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtHoraInicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtHoraInicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnHoraInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(txtPrevisaoEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPrevisaoEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPrevisaoEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
@@ -192,7 +251,7 @@ public class TelaOrdemServicoForm extends JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSalvar)
                     .addComponent(btnCancelar))
-                .addContainerGap(167, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         pack();
@@ -200,17 +259,24 @@ public class TelaOrdemServicoForm extends JDialog {
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
        if (!validarCampos()) {
-            return;
-        }
+        return;
+    }
 
-        ordemServico.setPlacaVeiculo(txtPlacaVeiculo.getText());
-        ordemServico.setValorTotal(Double.parseDouble(txtValorTotal.getText()));
-        ordemServico.setDataEntrada(LocalDate.parse(txtDataEntrada.getText()));
-        ordemServico.setHoraInicio(LocalTime.parse(txtHoraInicio.getText()));
-        ordemServico.setPrevisaoEntrega(LocalDateTime.parse(txtPrevisaoEntrega.getText()));
-        ordemServico.setStatus(cboStatus.getSelectedItem().toString());
-        ordemServico.setValorPago(Double.parseDouble(txtValorPago.getText()));
-        ordemServico.setDiferenca(Double.parseDouble(txtDiferenca.getText()));
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+    LocalDate dataEntrada = LocalDate.parse(txtDataEntrada.getText(), formatter);
+    LocalDateTime previsaoEntrega = LocalDateTime.parse(txtPrevisaoEntrega.getText(), 
+        DateTimeFormatter.ofPattern("dd/MM/yy HH:mm"));
+    
+    ordemServico.setDataEntrada(dataEntrada);
+    ordemServico.setPrevisaoEntrega(previsaoEntrega);
+    ordemServico.setPlacaVeiculo(txtPlacaVeiculo.getText());
+    
+    // Fix decimal number parsing
+    ordemServico.setValorTotal(Double.parseDouble(txtValorTotal.getText().replace(",", ".")));
+    ordemServico.setHoraInicio(LocalTime.parse(txtHoraInicio.getText()));
+    ordemServico.setStatus(cboStatus.getSelectedItem().toString());
+    ordemServico.setValorPago(Double.parseDouble(txtValorPago.getText().replace(",", ".")));
+    ordemServico.setDiferenca(Double.parseDouble(txtDiferenca.getText().replace(",", ".")));
 
         try {
             ordemServicoServico.salvar(ordemServico);
@@ -226,6 +292,71 @@ public class TelaOrdemServicoForm extends JDialog {
                 JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
+
+    private void btnDataEntradaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDataEntradaActionPerformed
+         JDialog dialog = new JDialog(this, true);
+    dialog.setLayout(new FlowLayout());
+    dialog.add(dateChooser);
+    
+    JButton btnOk = new JButton("OK");
+    btnOk.addActionListener(e -> {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
+        txtDataEntrada.setText(sdf.format(dateChooser.getDate()));
+        dialog.dispose();
+    });
+    dialog.add(btnOk);
+    
+    dialog.pack();
+    dialog.setLocationRelativeTo(txtDataEntrada);
+    dialog.setVisible(true);
+    }//GEN-LAST:event_btnDataEntradaActionPerformed
+
+    private void btnHoraInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHoraInicioActionPerformed
+        JDialog dialog = new JDialog(this, true);
+    dialog.setLayout(new FlowLayout());
+    dialog.add(timeSpinner);
+    
+    JButton btnOk = new JButton("OK");
+    btnOk.addActionListener(e -> {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        txtHoraInicio.setText(sdf.format(timeSpinner.getValue()));
+        dialog.dispose();
+    });
+    dialog.add(btnOk);
+    
+    dialog.pack();
+    dialog.setLocationRelativeTo(txtHoraInicio);
+    dialog.setVisible(true);
+    }//GEN-LAST:event_btnHoraInicioActionPerformed
+
+    private void btnPrevisaoEntregaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevisaoEntregaActionPerformed
+        JDialog dialog = new JDialog(this, true);
+    dialog.setLayout(new FlowLayout());
+    dialog.add(dateChooser);
+    dialog.add(timeSpinner);
+    
+    JButton btnOk = new JButton("OK");
+    btnOk.addActionListener(e -> {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm");
+        Date date = dateChooser.getDate();
+        Date time = (Date) timeSpinner.getValue();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        Calendar timeCal = Calendar.getInstance();
+        timeCal.setTime(time);
+        cal.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
+        cal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
+        
+        txtPrevisaoEntrega.setText(sdf.format(cal.getTime()));
+        dialog.dispose();
+    });
+    dialog.add(btnOk);
+    
+    dialog.pack();
+    dialog.setLocationRelativeTo(txtPrevisaoEntrega);
+    dialog.setVisible(true);
+
+    }//GEN-LAST:event_btnPrevisaoEntregaActionPerformed
  private void calcularDiferenca() {
         try {
             double valorTotal = Double.parseDouble(txtValorTotal.getText());
@@ -239,31 +370,77 @@ public class TelaOrdemServicoForm extends JDialog {
 
     private void carregarOrdemServico(int idOs) {
         ordemServico = ordemServicoServico.buscarPorId(idOs);
-        if (ordemServico != null) {
-            txtPlacaVeiculo.setText(ordemServico.getPlacaVeiculo());
-            txtValorTotal.setText(String.format("%.2f", ordemServico.getValorTotal()));
-            txtDataEntrada.setText(ordemServico.getDataEntrada().toString());
-            txtHoraInicio.setText(ordemServico.getHoraInicio().toString());
-            txtPrevisaoEntrega.setText(ordemServico.getPrevisaoEntrega().toString());
-            cboStatus.setSelectedItem(ordemServico.getStatus());
-            txtValorPago.setText(String.format("%.2f", ordemServico.getValorPago()));
-            txtDiferenca.setText(String.format("%.2f", ordemServico.getDiferenca()));
-        }
+    if (ordemServico != null) {
+        txtPlacaVeiculo.setText(ordemServico.getPlacaVeiculo());
+        txtValorTotal.setText(String.format("%.2f", ordemServico.getValorTotal()));
+        
+        // Format data entrada
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+        txtDataEntrada.setText(ordemServico.getDataEntrada().format(dateFormatter));
+        
+        // Format hora inicio
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        txtHoraInicio.setText(ordemServico.getHoraInicio().format(timeFormatter));
+        
+        // Format previsao entrega
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm");
+        txtPrevisaoEntrega.setText(ordemServico.getPrevisaoEntrega().format(dateTimeFormatter));
+        
+        cboStatus.setSelectedItem(ordemServico.getStatus());
+        txtValorPago.setText(String.format("%.2f", ordemServico.getValorPago()));
+        txtDiferenca.setText(String.format("%.2f", ordemServico.getDiferenca()));
+    }
     }
      private boolean validarCampos() {
         if (txtPlacaVeiculo.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Informe a placa do veículo!");
-            txtPlacaVeiculo.requestFocus();
-            return false;
-        }
-        try {
-            Double.parseDouble(txtValorTotal.getText());
-            Double.parseDouble(txtValorPago.getText());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Valores inválidos!");
-            return false;
-        }
-        return true;
+        JOptionPane.showMessageDialog(this, "Informe a placa do veículo!");
+        txtPlacaVeiculo.requestFocus();
+        return false;
+    }
+    
+    try {
+        Double.parseDouble(txtValorTotal.getText().replace(",", "."));
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Valor Total inválido!");
+        txtValorTotal.requestFocus();
+        return false;
+    }
+    
+    try {
+        Double.parseDouble(txtValorPago.getText().replace(",", "."));
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Valor Pago inválido!");
+        txtValorPago.requestFocus();
+        return false;
+    }
+    
+    try {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+        LocalDate.parse(txtDataEntrada.getText(), dateFormatter);
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Data de Entrada inválida! Use o formato dd/MM/yy");
+        txtDataEntrada.requestFocus();
+        return false;
+    }
+    
+    try {
+        LocalTime.parse(txtHoraInicio.getText());
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Hora de Início inválida! Use o formato HH:mm");
+        txtHoraInicio.requestFocus();
+        return false;
+    }
+    
+    try {
+        DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm");
+        LocalDateTime.parse(txtPrevisaoEntrega.getText(), dtFormatter);
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Previsão de Entrega inválida! Use o formato dd/MM/yy HH:mm");
+        txtPrevisaoEntrega.requestFocus();
+        return false;
+    }
+    
+    return true;
     }
 
     /**
@@ -310,6 +487,9 @@ public class TelaOrdemServicoForm extends JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnDataEntrada;
+    private javax.swing.JButton btnHoraInicio;
+    private javax.swing.JButton btnPrevisaoEntrega;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JComboBox<String> cboStatus;
     private javax.swing.JLabel jLabel1;

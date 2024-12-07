@@ -4,12 +4,11 @@
  */
 package persistencia;
 
-import persistencia.ConexaoBD;
-import modelo.Funcionario;
 import interfaces.ICRUD;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.Funcionario;
 
 public class FuncionarioDAO implements ICRUD<Funcionario> {
     @Override
@@ -50,23 +49,21 @@ public class FuncionarioDAO implements ICRUD<Funcionario> {
     
 
     @Override
-    public Funcionario buscarPorId(int id) {
-        String sql = "SELECT * FROM funcionario WHERE id_funcionario = ?";
-        
-        try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                return criarFuncionario(rs);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar funcionário: " + e.getMessage());
+public Funcionario buscarPorId(Object id) {
+    String sql = "SELECT * FROM funcionario WHERE id_funcionario = ?";
+    try (Connection conn = ConexaoBD.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, Integer.parseInt(id.toString()));
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return criarFuncionario(rs);
         }
-        return null;
+    } catch (SQLException e) {
+        throw new RuntimeException("Erro ao buscar funcionário: " + e.getMessage());
     }
+    return null;
+}
+
 
     @Override
     public List<Funcionario> listarTodos() {

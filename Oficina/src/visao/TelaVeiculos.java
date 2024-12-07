@@ -5,6 +5,9 @@
 package visao;
 
 import forms.TelaVeiculoForm;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Frame;
 import java.text.SimpleDateFormat;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -12,16 +15,17 @@ import modelo.Veiculo;
 import servico.VeiculoServico;
 import java.util.List;
 
-public class TelaVeiculos extends javax.swing.JFrame {
+public class TelaVeiculos extends JInternalFrame {
     private DefaultTableModel modeloTabela;
     private VeiculoServico veiculoServico;
 
     public TelaVeiculos() {
-        super("Gestão de Veículos");
+        super("Gestão de Veículos", true, true, true, true);
         veiculoServico = new VeiculoServico();
         initComponents();
         configurarTabela();
         carregarDados();
+        setSize(800, 600);
     }
 
     private void configurarTabela() {
@@ -57,7 +61,7 @@ public class TelaVeiculos extends javax.swing.JFrame {
         btnNovo = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tabela.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -114,42 +118,59 @@ public class TelaVeiculos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
-       TelaVeiculoForm form = new TelaVeiculoForm(this, true);
-        form.setVisible(true);
-        carregarDados();
+      TelaVeiculoForm form = new TelaVeiculoForm((Frame) SwingUtilities.getWindowAncestor(this), true);
+    form.setLocationRelativeTo(this);
+    form.setVisible(true);
+    carregarDados();
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        int linha = tabela.getSelectedRow();
-        if (linha >= 0) {
-            String id = (String) tabela.getValueAt(linha, 0);
-            TelaVeiculoForm form = new TelaVeiculoForm(this, true, id);
-            form.setVisible(true);
-            carregarDados();
+       int linha = tabela.getSelectedRow();
+    if (linha >= 0) {
+        String placa = (String) tabela.getValueAt(linha, 1); // Assumindo que a placa está na segunda coluna
+        if (placa != null && !placa.trim().isEmpty()) {
+            try {
+                TelaVeiculoForm form = new TelaVeiculoForm((Frame) SwingUtilities.getWindowAncestor(this), true, placa);
+                form.setLocationRelativeTo(this);
+                form.setVisible(true);
+                carregarDados();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this,
+                    "Erro ao abrir formulário de veículo: " + e.getMessage(),
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+            }
         } else {
             JOptionPane.showMessageDialog(this,
-                "Selecione um veículo para editar",
+                "Placa inválida",
                 "Editar Veículo",
                 JOptionPane.WARNING_MESSAGE);
         }
+    } else {
+        JOptionPane.showMessageDialog(this,
+            "Selecione um veículo para editar",
+            "Editar Veículo",
+            JOptionPane.WARNING_MESSAGE);
+    }
     }//GEN-LAST:event_btnEditarActionPerformed
   private void carregarDados() {
-         modeloTabela.setRowCount(0);
-        List<Veiculo> veiculos = veiculoServico.listarTodos();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        
-        for (Veiculo v : veiculos) {
-            modeloTabela.addRow(new Object[]{               
-                v.getPlaca(),
-                v.getIdModelo(),
-                v.getDataCadastro() != null ? sdf.format(v.getDataCadastro()) : "",
-                v.getAnoFabricacao(),
-                v.getAnoModelo(),
-                v.getNumeroChassi(),
-                v.getPatrimonio(),
-                v.getQuilometragem()
-            });
-        }
+        modeloTabela.setRowCount(0);
+    List<Veiculo> veiculos = veiculoServico.listarTodos();
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    
+    for (Veiculo v : veiculos) {
+        modeloTabela.addRow(new Object[]{               
+            v.getPlaca(),  // This should be first since it's the ID
+            v.getPlaca(),  // Add placa again as second column
+            v.getIdModelo(),
+            v.getDataCadastro() != null ? sdf.format(v.getDataCadastro()) : "",
+            v.getAnoFabricacao(),
+            v.getAnoModelo(),
+            v.getNumeroChassi(),
+            v.getPatrimonio(),
+            v.getQuilometragem()
+        });
+    }
     }
     /**
      * @param args the command line arguments

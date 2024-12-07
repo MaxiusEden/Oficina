@@ -4,12 +4,11 @@
  */
 package persistencia;
 
-import persistencia.ConexaoBD;
-import modelo.ItensServico;
 import interfaces.ICRUD;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.ItensServico;
 
 public class ItensServicoDAO implements ICRUD<ItensServico> {
     @Override
@@ -58,13 +57,13 @@ public class ItensServicoDAO implements ICRUD<ItensServico> {
     
 
     @Override
-    public ItensServico buscarPorId(int id) {
+    public ItensServico buscarPorId(Object id) {
         String sql = "SELECT * FROM itens_servicos WHERE id_itens_servico = ?";
         
         try (Connection conn = ConexaoBD.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, id);
+            stmt.setInt(1, Integer.parseInt(id.toString()));
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {
@@ -106,4 +105,3 @@ public class ItensServicoDAO implements ICRUD<ItensServico> {
         return item;
     }
 }
-

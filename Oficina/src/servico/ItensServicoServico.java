@@ -4,9 +4,9 @@
  */
 package servico;
 
+import java.util.List;
 import modelo.ItensServico;
 import persistencia.ItensServicoDAO;
-import java.util.List;
 
 public class ItensServicoServico {
     private ItensServicoDAO itensServicoDAO;
@@ -46,8 +46,6 @@ public class ItensServicoServico {
             throw new IllegalArgumentException("Valor unitário deve ser maior que zero");
         }
     }
-
-   
 
     public ItensServico buscarPorId(int id) {
         if (id <= 0) {

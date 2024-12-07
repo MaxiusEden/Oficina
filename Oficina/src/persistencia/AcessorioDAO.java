@@ -44,24 +44,22 @@ public class AcessorioDAO implements ICRUD<Acessorio> {
 
     
 
-    @Override
-    public Acessorio buscarPorId(int id) {
-        String sql = "SELECT * FROM acessorio WHERE id_acessorio = ?";
-        
-        try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                return criarAcessorio(rs);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar acessório: " + e.getMessage());
+   @Override
+public Acessorio buscarPorId(Object id) {
+    String sql = "SELECT * FROM acessorio WHERE id_acessorio = ?";
+    try (Connection conn = ConexaoBD.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, Integer.parseInt(id.toString()));
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return criarAcessorio(rs);
         }
-        return null;
+    } catch (SQLException e) {
+        throw new RuntimeException("Erro ao buscar acessório: " + e.getMessage());
     }
+    return null;
+}
+
 
     @Override
     public List<Acessorio> listarTodos() {

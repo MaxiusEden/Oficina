@@ -4,9 +4,9 @@
  */
 package servico;
 
+import java.util.List;
 import modelo.Peca;
 import persistencia.PecaDAO;
-import java.util.List;
 
 public class PecaServico {
     private PecaDAO pecaDAO;
@@ -42,8 +42,6 @@ public class PecaServico {
             throw new IllegalArgumentException("Código do fabricante é obrigatório");
         }
     }
-
-    
 
     public Peca buscarPorId(int id) {
         if (id <= 0) {

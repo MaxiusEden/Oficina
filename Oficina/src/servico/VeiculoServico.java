@@ -16,14 +16,20 @@ public class VeiculoServico {
     }
 
     public void salvar(Veiculo veiculo) {
-        validarVeiculo(veiculo);
+    validarVeiculo(veiculo);
+    
+    try {
+        Veiculo veiculoExistente = buscarPorPlaca(veiculo.getPlaca());
         
-        if (veiculo.getPlaca() == null || veiculo.getPlaca().isEmpty()) {
-            veiculoDAO.inserir(veiculo);
-        } else {
+        if (veiculoExistente != null) {
             veiculoDAO.atualizar(veiculo);
+        } else {
+            veiculoDAO.inserir(veiculo);
         }
+    } catch (Exception e) {
+        throw new RuntimeException("Erro ao salvar veículo: " + e.getMessage(), e);
     }
+}
 
     private void validarVeiculo(Veiculo veiculo) {
         if (veiculo.getPlaca() == null || veiculo.getPlaca().trim().isEmpty()) {
@@ -50,11 +56,16 @@ public class VeiculoServico {
     
 
     public Veiculo buscarPorPlaca(String placa) {
-        if (placa == null || placa.trim().isEmpty()) {
-            throw new IllegalArgumentException("Placa inválida para busca");
-        }
-        return veiculoDAO.buscarPorId(Integer.parseInt(placa));
+    if (placa == null || placa.trim().isEmpty()) {
+        throw new IllegalArgumentException("Placa inválida");
     }
+    
+    try {
+        return veiculoDAO.buscarPorId(placa);
+    } catch (Exception e) {
+        throw new RuntimeException("Erro ao buscar veículo: " + e.getMessage(), e);
+    }
+}
 
     public List<Veiculo> listarTodos() {
         return veiculoDAO.listarTodos();

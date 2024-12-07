@@ -4,7 +4,6 @@
  */
 package persistencia;
 
-import persistencia.ConexaoBD;
 import modelo.ItensPeca;
 import interfaces.ICRUD;
 import java.sql.*;
@@ -56,23 +55,21 @@ public class ItensPecaDAO implements ICRUD<ItensPeca> {
     
 
     @Override
-    public ItensPeca buscarPorId(int id) {
-        String sql = "SELECT * FROM itens_peca WHERE id_itens_peca = ?";
-        
-        try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                return criarItensPeca(rs);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar item de peça: " + e.getMessage());
+public ItensPeca buscarPorId(Object id) {
+    String sql = "SELECT * FROM itens_peca WHERE id_itens_peca = ?";
+    try (Connection conn = ConexaoBD.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, Integer.parseInt(id.toString()));
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return criarItensPeca(rs);
         }
-        return null;
+    } catch (SQLException e) {
+        throw new RuntimeException("Erro ao buscar item de peça: " + e.getMessage());
     }
+    return null;
+}
+
 
     @Override
     public List<ItensPeca> listarTodos() {

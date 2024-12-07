@@ -5,41 +5,59 @@
 package visao;
 
 import forms.TelaOrdemServicoForm;
-import java.awt.Dimension;
+import java.awt.BorderLayout;
+import java.awt.Frame;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import modelo.OrdemServico;
 import servico.OrdemServicoServico;
 import java.util.List;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 
-public class TelaOrdemServico extends javax.swing.JFrame {
+public class TelaOrdemServico extends JInternalFrame {
     private DefaultTableModel modeloTabela;
     private OrdemServicoServico ordemServicoServico;
+    
 
     public TelaOrdemServico() {
-        super("Gestão de Ordens de Serviço");
+        super("Gestão de Ordens de Serviço", false, true, false, true);
         ordemServicoServico = new OrdemServicoServico();
+        setClosable(true);
+        setMaximizable(true);
+        setIconifiable(true);
+        setResizable(true);
+        setLayout(new BorderLayout());
         initComponents();
         configurarTabela();
         carregarDados();
+        pack();
     }
 
     private void configurarTabela() {
         String[] colunas = {
-            "Número OS", "Data Abertura", "Data Fechamento", 
-            "Placa Veículo", "Descrição", "Status"
-        };
-        modeloTabela = new DefaultTableModel(colunas, 0);
-        tabela.setModel(modeloTabela);
+        "ID OS", "Placa Veículo", "Valor Total", "Data Entrada", 
+        "Hora Início", "Previsão Entrega", "Status", "Valor Pago", "Diferença"
+    };
+    
+    modeloTabela = new DefaultTableModel(colunas, 0) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
+    
+    tabela.setModel(modeloTabela);
+    tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        tabela.getColumnModel().getColumn(0).setPreferredWidth(100);  // Número OS
-        tabela.getColumnModel().getColumn(1).setPreferredWidth(120);  // Data Abertura
-        tabela.getColumnModel().getColumn(2).setPreferredWidth(120);  // Data Fechamento
-        tabela.getColumnModel().getColumn(3).setPreferredWidth(100);  // Placa Veículo
-        tabela.getColumnModel().getColumn(4).setPreferredWidth(300);  // Descrição
-        tabela.getColumnModel().getColumn(5).setPreferredWidth(100);  // Status
+    tabela.getColumnModel().getColumn(0).setPreferredWidth(70);   // ID OS
+    tabela.getColumnModel().getColumn(1).setPreferredWidth(100);  // Placa Veículo
+    tabela.getColumnModel().getColumn(2).setPreferredWidth(100);  // Valor Total
+    tabela.getColumnModel().getColumn(3).setPreferredWidth(100);  // Data Entrada
+    tabela.getColumnModel().getColumn(4).setPreferredWidth(80);   // Hora Início
+    tabela.getColumnModel().getColumn(5).setPreferredWidth(120);  // Previsão Entrega
+    tabela.getColumnModel().getColumn(6).setPreferredWidth(100);  // Status
+    tabela.getColumnModel().getColumn(7).setPreferredWidth(100);  // Valor Pago
+    tabela.getColumnModel().getColumn(8).setPreferredWidth(100);  // Diferença
     }
 
     /**
@@ -56,7 +74,7 @@ public class TelaOrdemServico extends javax.swing.JFrame {
         btnNovo = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tabela.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -89,25 +107,26 @@ public class TelaOrdemServico extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 953, Short.MAX_VALUE)
-                .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnNovo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnEditar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 953, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnNovo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnEditar)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(268, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNovo)
                     .addComponent(btnEditar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -115,24 +134,28 @@ public class TelaOrdemServico extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
-        TelaOrdemServicoForm form = new TelaOrdemServicoForm(this, true);
+        TelaOrdemServicoForm form = new TelaOrdemServicoForm((Frame)evt.getSource(), true);
         form.setVisible(true);
         carregarDados();
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-       int linha = tabela.getSelectedRow();
-        if (linha >= 0) {
-            int idOs = (int) tabela.getValueAt(linha, 0);
-            TelaOrdemServicoForm form = new TelaOrdemServicoForm(this, true, idOs);
-            form.setVisible(true);
-            carregarDados();
-        } else {
-            JOptionPane.showMessageDialog(this,
-                "Selecione uma ordem de serviço para editar",
-                "Editar OS",
-                JOptionPane.WARNING_MESSAGE);
-        }
+        int linha = tabela.getSelectedRow();
+    if (linha >= 0) {
+        int idOs = (int) tabela.getValueAt(linha, 0);
+        
+        // Obter o Frame ancestral usando SwingUtilities
+        Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
+        
+        TelaOrdemServicoForm form = new TelaOrdemServicoForm(parentFrame, true, idOs);
+        form.setVisible(true);
+        carregarDados();
+    } else {
+        JOptionPane.showMessageDialog(this, 
+            "Selecione uma ordem de serviço para editar",
+            "Editar OS",
+            JOptionPane.WARNING_MESSAGE);
+    }
     }//GEN-LAST:event_btnEditarActionPerformed
 private void carregarDados() {
          modeloTabela.setRowCount(0);

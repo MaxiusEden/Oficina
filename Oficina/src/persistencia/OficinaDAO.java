@@ -4,12 +4,11 @@
  */
 package persistencia;
 
-import persistencia.ConexaoBD;
-import modelo.Oficina;
 import interfaces.ICRUD;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.Oficina;
 
 public class OficinaDAO implements ICRUD<Oficina> {
     @Override
@@ -59,7 +58,7 @@ public class OficinaDAO implements ICRUD<Oficina> {
 
     
     @Override
-    public Oficina buscarPorId(int id) {
+    public Oficina buscarPorId(Object id) {
         String sql = "SELECT * FROM oficina WHERE cnpj = ?";
         
         try (Connection conn = ConexaoBD.getConnection();

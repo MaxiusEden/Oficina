@@ -4,12 +4,11 @@
  */
 package persistencia;
 
-import persistencia.ConexaoBD;
-import modelo.Posse;
 import interfaces.ICRUD;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.Posse;
 
 public class PosseDAO implements ICRUD<Posse> {
      @Override
@@ -49,13 +48,13 @@ public class PosseDAO implements ICRUD<Posse> {
     
 
     @Override
-    public Posse buscarPorId(int id) {
+    public Posse buscarPorId(Object id) {
         String sql = "SELECT * FROM posse WHERE id_posse = ?";
         
         try (Connection conn = ConexaoBD.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, id);
+            stmt.setInt(1, (Integer)id);
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {

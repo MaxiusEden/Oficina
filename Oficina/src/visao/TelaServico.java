@@ -5,18 +5,22 @@
 package visao;
 
 import forms.TelaServicoForm;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Frame;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import modelo.Servico;
 import servico.ServicoServico;
 import java.util.List;
 
-public class TelaServico extends javax.swing.JFrame {
+public class TelaServico extends javax.swing.JInternalFrame {
     private DefaultTableModel modeloTabela;
     private ServicoServico servicoServico;
 
     public TelaServico() {
-        super("Gestão de Serviços");
+        super("Gestão de Serviços", true, true, true, true);
         servicoServico = new ServicoServico();
         initComponents();
         configurarTabela();
@@ -50,6 +54,8 @@ public class TelaServico extends javax.swing.JFrame {
             });
         }
     }
+  
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -64,7 +70,7 @@ public class TelaServico extends javax.swing.JFrame {
         btnNovo = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tabela.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -124,20 +130,20 @@ public class TelaServico extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
-       TelaServicoForm form = new TelaServicoForm(this, true);
+        TelaServicoForm form = new TelaServicoForm((Frame)evt.getSource(), true);
         form.setVisible(true);
         carregarDados();
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-       int linha = tabela.getSelectedRow();
+        int linha = tabela.getSelectedRow();
         if (linha >= 0) {
             int id = (int) tabela.getValueAt(linha, 0);
-            TelaServicoForm form = new TelaServicoForm(this, true, id);
+            TelaServicoForm form = new TelaServicoForm((Frame)evt.getSource(), true, id);
             form.setVisible(true);
             carregarDados();
         } else {
-            JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog((Component)evt.getSource(),
                 "Selecione um serviço para editar",
                 "Editar Serviço",
                 JOptionPane.WARNING_MESSAGE);

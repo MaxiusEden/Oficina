@@ -4,40 +4,40 @@
  */
 package persistencia;
 
-import persistencia.ConexaoBD;
-import modelo.Veiculo;
 import interfaces.ICRUD;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.Veiculo;
 
 public class VeiculoDAO implements ICRUD<Veiculo> {
-    @Override
-public void inserir(Veiculo veiculo) {
-    String sql = "INSERT INTO veiculo (placa, id_modelo, data_cadastro, ano_fabricacao, " +
-                "ano_modelo, numero_chassi, patrimonio, quilometragem) VALUES (?, ?, CURRENT_DATE, ?, ?, ?, ?, ?)";
     
-    try (Connection conn = ConexaoBD.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
+    @Override
+    public void inserir(Veiculo veiculo) {
+        String sql = "INSERT INTO veiculo (placa, id_modelo, data_cadastro, ano_fabricacao, " +
+                     "ano_modelo, numero_chassi, patrimonio, quilometragem) VALUES (?, ?, CURRENT_DATE, ?, ?, ?, ?, ?)";
         
-        stmt.setString(1, veiculo.getPlaca());
-        stmt.setInt(2, veiculo.getIdModelo());
-        stmt.setInt(3, veiculo.getAnoFabricacao());
-        stmt.setInt(4, veiculo.getAnoModelo());
-        stmt.setString(5, veiculo.getNumeroChassi());
-        stmt.setString(6, veiculo.getPatrimonio());
-        stmt.setDouble(7, veiculo.getQuilometragem());
-        
-        stmt.executeUpdate();
-    } catch (SQLException e) {
-        throw new RuntimeException("Erro ao inserir veículo: " + e.getMessage());
+        try (Connection conn = ConexaoBD.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, veiculo.getPlaca());
+            stmt.setInt(2, veiculo.getIdModelo());
+            stmt.setInt(3, veiculo.getAnoFabricacao());
+            stmt.setInt(4, veiculo.getAnoModelo());
+            stmt.setString(5, veiculo.getNumeroChassi());
+            stmt.setString(6, veiculo.getPatrimonio());
+            stmt.setDouble(7, veiculo.getQuilometragem());
+            
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao inserir veículo: " + e.getMessage(), e);
+        }
     }
-}
 
-@Override
+   @Override
 public void atualizar(Veiculo veiculo) {
     String sql = "UPDATE veiculo SET id_modelo=?, ano_fabricacao=?, " +
-                "ano_modelo=?, numero_chassi=?, patrimonio=?, quilometragem=? WHERE placa=?";
+                 "ano_modelo=?, numero_chassi=?, patrimonio=?, quilometragem=? WHERE placa=?";
     
     try (Connection conn = ConexaoBD.getConnection();
          PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -52,30 +52,34 @@ public void atualizar(Veiculo veiculo) {
         
         stmt.executeUpdate();
     } catch (SQLException e) {
-        throw new RuntimeException("Erro ao atualizar veículo: " + e.getMessage());
+        throw new RuntimeException("Erro ao atualizar veículo: " + e.getMessage(), e);
     }
 }
 
-    
-
     @Override
-    public Veiculo buscarPorId(int id) {
-        String sql = "SELECT * FROM veiculo WHERE placa = ?";
-        
-        try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setString(1, String.valueOf(id));
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                return criarVeiculo(rs);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar veículo: " + e.getMessage());
-        }
+public Veiculo buscarPorId(Object id) {
+    if (id == null) {
         return null;
     }
+    
+    String placa = id.toString();
+    String sql = "SELECT * FROM veiculo WHERE placa = ?";
+    
+    try (Connection conn = ConexaoBD.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        
+        stmt.setString(1, placa);
+        ResultSet rs = stmt.executeQuery();
+        
+        if (rs.next()) {
+            return criarVeiculo(rs);
+        }
+    } catch (SQLException e) {
+        throw new RuntimeException("Erro ao buscar veículo por placa: " + e.getMessage(), e);
+    }
+    
+    return null;
+}
 
     @Override
     public List<Veiculo> listarTodos() {

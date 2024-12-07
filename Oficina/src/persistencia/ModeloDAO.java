@@ -3,13 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package persistencia;
-
-import persistencia.ConexaoBD;
-import modelo.Modelo;
 import interfaces.ICRUD;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.Modelo;
 
 public class ModeloDAO implements ICRUD<Modelo> {
     @Override
@@ -43,18 +41,13 @@ public class ModeloDAO implements ICRUD<Modelo> {
         }
     }
 
-    
-
     @Override
-    public Modelo buscarPorId(int id) {
+    public Modelo buscarPorId(Object id) {
         String sql = "SELECT * FROM modelo WHERE id_modelo = ?";
-        
         try (Connection conn = ConexaoBD.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setInt(1, id);
+            stmt.setInt(1, Integer.parseInt(id.toString()));
             ResultSet rs = stmt.executeQuery();
-            
             if (rs.next()) {
                 return criarModelo(rs);
             }
@@ -90,4 +83,3 @@ public class ModeloDAO implements ICRUD<Modelo> {
         return modelo;
     }
 }
-

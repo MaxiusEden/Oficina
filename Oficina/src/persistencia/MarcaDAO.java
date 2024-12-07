@@ -4,12 +4,11 @@
  */
 package persistencia;
 
-import persistencia.ConexaoBD;
-import modelo.Marca;
 import interfaces.ICRUD;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.Marca;
 
 public class MarcaDAO implements ICRUD<Marca> {
     @Override
@@ -44,13 +43,13 @@ public class MarcaDAO implements ICRUD<Marca> {
     
 
     @Override
-    public Marca buscarPorId(int id) {
+    public Marca buscarPorId(Object id) {
         String sql = "SELECT * FROM marca WHERE id_marca = ?";
         
         try (Connection conn = ConexaoBD.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, id);
+            stmt.setInt(1, Integer.parseInt(id.toString()));
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {
@@ -87,4 +86,3 @@ public class MarcaDAO implements ICRUD<Marca> {
         return marca;
     }
 }
-

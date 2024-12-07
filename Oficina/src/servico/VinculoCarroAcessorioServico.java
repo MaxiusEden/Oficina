@@ -4,9 +4,9 @@
  */
 package servico;
 
+import java.util.List;
 import modelo.VinculoCarroAcessorio;
 import persistencia.VinculoCarroAcessorioDAO;
-import java.util.List;
 
 public class VinculoCarroAcessorioServico {
     private VinculoCarroAcessorioDAO vinculoDAO;
@@ -36,7 +36,6 @@ public class VinculoCarroAcessorioServico {
             throw new IllegalArgumentException("ID do acessório inválido");
         }
 
-        vinculoDAO.excluir(placa, idAcessorio);
     }
 
     public VinculoCarroAcessorio buscarPorPlacaEAcessorio(String placa, int idAcessorio) {

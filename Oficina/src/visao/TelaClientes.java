@@ -3,24 +3,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package visao;
+
 import forms.TelaClienteForm;
+import java.awt.Frame;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import modelo.Cliente;
 import persistencia.ClienteDAO;
 import java.util.List;
 
-public class TelaClientes extends javax.swing.JFrame {
-     private DefaultTableModel modeloTabela;
+public class TelaClientes extends JInternalFrame {
+    private DefaultTableModel modeloTabela;
     private ClienteDAO clienteDAO;
-    
+
     public TelaClientes() {
+        super("Gestão de Clientes", true, true, true, true);
         initComponents();
         configurarTabela();
         clienteDAO = new ClienteDAO();
         carregarDados();
     }
-    
+
     private void configurarTabela() {
         String[] colunas = {
             "ID", "Tipo", "Nome", "Telefone", "Logradouro", "Número", 
@@ -28,19 +31,6 @@ public class TelaClientes extends javax.swing.JFrame {
         };
         modeloTabela = new DefaultTableModel(colunas, 0);
         tabela.setModel(modeloTabela);
-        
-        tabela.getColumnModel().getColumn(0).setPreferredWidth(50);  // ID
-        tabela.getColumnModel().getColumn(1).setPreferredWidth(70);  // Tipo
-        tabela.getColumnModel().getColumn(2).setPreferredWidth(200); // Nome
-        tabela.getColumnModel().getColumn(3).setPreferredWidth(100); // Telefone
-        tabela.getColumnModel().getColumn(4).setPreferredWidth(200); // Logradouro
-        tabela.getColumnModel().getColumn(5).setPreferredWidth(70);  // Número
-        tabela.getColumnModel().getColumn(6).setPreferredWidth(150); // Complemento
-        tabela.getColumnModel().getColumn(7).setPreferredWidth(150); // Email
-        tabela.getColumnModel().getColumn(8).setPreferredWidth(100); // CPF
-        tabela.getColumnModel().getColumn(9).setPreferredWidth(100); // CNPJ
-        tabela.getColumnModel().getColumn(10).setPreferredWidth(150); // Contato
-        tabela.getColumnModel().getColumn(11).setPreferredWidth(120); // Inscrição
     }
 
     /**
@@ -57,7 +47,7 @@ public class TelaClientes extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tabela = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         btnNovo.setText("Novo Cliente");
         btnNovo.addActionListener(new java.awt.event.ActionListener() {
@@ -122,8 +112,8 @@ private void carregarDados() {
     for (Cliente c : clientes) {
         modeloTabela.addRow(new Object[]{
             c.getIdCliente(),
-            c.getNome(),
             c.getTipoCliente(),
+            c.getNome(),
             c.getTelefone(),
             c.getLogradouro(),
             c.getNumero(),
@@ -137,25 +127,26 @@ private void carregarDados() {
     }
 }
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
-        TelaClienteForm form = new TelaClienteForm(this, true);
+        TelaClienteForm form = new TelaClienteForm(new javax.swing.JFrame(), true);
         form.setVisible(true);
         carregarDados();
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
- int linha = tabela.getSelectedRow();
-    if (linha >= 0) {
-        int id = (int) tabela.getValueAt(linha, 0);
-        TelaClienteForm form = new TelaClienteForm(this, true, id);
-        form.setVisible(true);
-        carregarDados();
-    } else {
-        JOptionPane.showMessageDialog(this, 
-            "Selecione um cliente para editar",
-            "Editar Cliente",
-            JOptionPane.WARNING_MESSAGE);
-        
-        }    }//GEN-LAST:event_btnEditarActionPerformed
+        int linha = tabela.getSelectedRow();
+        if (linha >= 0) {
+            int id = (int) tabela.getValueAt(linha, 0);
+            TelaClienteForm form = new TelaClienteForm((Frame) this.getParent(), true, id);
+            form.setVisible(true);
+            carregarDados();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Selecione um cliente para editar",
+                    "Editar Cliente",
+                    JOptionPane.WARNING_MESSAGE);
+
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
 
     /**
      * @param args the command line arguments

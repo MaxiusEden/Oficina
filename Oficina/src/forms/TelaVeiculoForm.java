@@ -6,7 +6,7 @@ package forms;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Date;
 import modelo.Veiculo;
 import modelo.Modelo;
@@ -21,24 +21,37 @@ public class TelaVeiculoForm extends JDialog {
 
     public TelaVeiculoForm(Frame parent, boolean modal) {
         super(parent, modal);
-        setTitle("Novo Veículo");
-        veiculoServico = new VeiculoServico();
-        modeloServico = new ModeloServico();
-        veiculo = new Veiculo();
-        initComponents();
-        configurarComponentes();
+    System.out.println("TelaVeiculoForm constructor called");
+    setTitle("Novo Veículo");
+    veiculoServico = new VeiculoServico();
+    modeloServico = new ModeloServico();
+    veiculo = new Veiculo();
+    initComponents();
+    configurarComponentes();
     }
 
     public TelaVeiculoForm(Frame parent, boolean modal, String placa) {
-        super(parent, modal);
-        setTitle("Editar Veículo");
-        veiculoServico = new VeiculoServico();
-        modeloServico = new ModeloServico();
-        editando = true;
-        initComponents();
-        configurarComponentes();
+    super(parent, modal);
+    setTitle("Editar Veículo");
+    
+    // Inicializar serviços
+    veiculoServico = new VeiculoServico();
+    modeloServico = new ModeloServico(); // Adicione esta linha
+    
+    initComponents();
+    configurarComponentes();
+    carregarModelos(); // Certifique-se de chamar este método para popular o combo de modelos
+    
+    try {
         carregarVeiculo(placa);
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, 
+            "Erro ao carregar veículo: " + e.getMessage(), 
+            "Erro", 
+            JOptionPane.ERROR_MESSAGE);
+        dispose();
     }
+}
 
     private void configurarComponentes() {
         carregarModelos();
@@ -196,44 +209,55 @@ public class TelaVeiculoForm extends JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
- private void carregarModelos() {
-       List modelos = (List) modeloServico.listarTodos();
-    DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-    Dimension size = modelos.size();
-    int length = (int) size.getWidth();
-    for (int i = 0; i < length; i++) {
-        model.addElement(modelos.toString());
+private void carregarModelos() {
+    try {
+        List<Modelo> modelos = modeloServico.listarTodos();
+        
+        // Limpar combo existente
+        cboModelo.removeAllItems();
+        
+        // Adicionar modelos ao combo
+        for (Modelo modelo : modelos) {
+            cboModelo.addItem(modelo);
+        }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, 
+            "Erro ao carregar modelos: " + e.getMessage(), 
+            "Erro", 
+            JOptionPane.ERROR_MESSAGE);
     }
-    cboModelo.setModel(model);
-    }
+}
+   
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         if (!validarCampos()) {
-            return;
-        }
+        return;
+    }
 
-        veiculo.setPlaca(txtPlaca.getText());
-        Modelo modeloSelecionado = (Modelo) cboModelo.getSelectedItem();
-        veiculo.setIdModelo(modeloSelecionado.getIdModelo());
+    veiculo.setPlaca(txtPlaca.getText());
+    veiculo.setIdModelo(((Modelo) cboModelo.getSelectedItem()).getIdModelo());
+    veiculo.setAnoFabricacao(Integer.parseInt(txtAnoFabricacao.getText()));
+    veiculo.setAnoModelo(Integer.parseInt(txtAnoModelo.getText()));
+    veiculo.setNumeroChassi(txtChassi.getText());
+    veiculo.setPatrimonio(txtPatrimonio.getText());
+    veiculo.setQuilometragem(Double.parseDouble(txtQuilometragem.getText()));
+    
+    if (txtDataCadastro.getValue() != null) {
         veiculo.setDataCadastro((Date) txtDataCadastro.getValue());
-        veiculo.setAnoFabricacao(Integer.parseInt(txtAnoFabricacao.getText()));
-        veiculo.setAnoModelo(Integer.parseInt(txtAnoModelo.getText()));
-        veiculo.setNumeroChassi(txtChassi.getText());
-        veiculo.setPatrimonio(txtPatrimonio.getText());
-        veiculo.setQuilometragem(Double.parseDouble(txtQuilometragem.getText()));
+    }
 
-        try {
-            veiculoServico.salvar(veiculo);
-            JOptionPane.showMessageDialog(this, 
-                "Veículo salvo com sucesso!", 
-                "Sucesso", 
-                JOptionPane.INFORMATION_MESSAGE);
-            dispose();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, 
-                "Erro ao salvar veículo: " + e.getMessage(), 
-                "Erro", 
-                JOptionPane.ERROR_MESSAGE);
-        }
+    try {
+        veiculoServico.salvar(veiculo);
+        JOptionPane.showMessageDialog(this, 
+            "Veículo salvo com sucesso!", 
+            "Sucesso", 
+            JOptionPane.INFORMATION_MESSAGE);
+        dispose();
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, 
+            "Erro ao salvar veículo: " + e.getMessage(), 
+            "Erro", 
+            JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_btnSalvarActionPerformed
 private boolean validarCampos() {
         if (txtPlaca.getText().trim().isEmpty()) {
@@ -258,27 +282,29 @@ private boolean validarCampos() {
     }
 
     private void carregarVeiculo(String placa) {
-        veiculo = veiculoServico.buscarPorPlaca(placa);
-        if (veiculo != null) {
-            txtPlaca.setText(veiculo.getPlaca());
-            txtDataCadastro.setValue(veiculo.getDataCadastro());
-            txtAnoFabricacao.setText(String.valueOf(veiculo.getAnoFabricacao()));
-            txtAnoModelo.setText(String.valueOf(veiculo.getAnoModelo()));
-            txtChassi.setText(veiculo.getNumeroChassi());
-            txtPatrimonio.setText(veiculo.getPatrimonio());
-            txtQuilometragem.setText(String.valueOf(veiculo.getQuilometragem()));
-            
-            for (int i = 0; i < cboModelo.getItemCount(); i++) {
-                String m = cboModelo.getItemAt(i);
-
-                if (m.equals(String.valueOf(veiculo.getIdModelo()))) {
-
-                    cboModelo.setSelectedIndex(i);
-                    break;
-                }
+    veiculo = veiculoServico.buscarPorPlaca(placa);
+    
+    if (veiculo != null) {
+        txtPlaca.setText(veiculo.getPlaca());
+        txtDataCadastro.setValue(veiculo.getDataCadastro());
+        txtAnoFabricacao.setText(String.valueOf(veiculo.getAnoFabricacao()));
+        txtAnoModelo.setText(String.valueOf(veiculo.getAnoModelo()));
+        txtChassi.setText(veiculo.getNumeroChassi());
+        txtPatrimonio.setText(veiculo.getPatrimonio());
+        txtQuilometragem.setText(String.valueOf(veiculo.getQuilometragem()));
+        
+        // Configurar modelo
+        for (int i = 0; i < cboModelo.getItemCount(); i++) {
+            Modelo m = cboModelo.getItemAt(i);
+            if (m.getIdModelo() == veiculo.getIdModelo()) {
+                cboModelo.setSelectedIndex(i);
+                break;
             }
         }
+    } else {
+        throw new RuntimeException("Veículo não encontrado");
     }
+}
     /**
      * @param args the command line arguments
      */
@@ -325,7 +351,7 @@ private boolean validarCampos() {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnSalvar;
-    private javax.swing.JComboBox<String> cboModelo;
+    private javax.swing.JComboBox<Modelo> cboModelo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
